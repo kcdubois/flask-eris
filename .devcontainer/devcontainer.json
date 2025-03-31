@@ -1,0 +1,11 @@
+{
+	"name": "python-flask",
+	"dockerComposeFile": "compose.yaml",
+	"service": "devcontainer",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+	"features": {
+		"ghcr.io/devcontainers-extra/features/pipenv:2": {}
+	},
+	"forwardPorts": [5000]
+}

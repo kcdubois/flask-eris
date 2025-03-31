@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+    </style>
+    <title>Eris, manage discord and strife</title>
+</head>
+
+<body>
+    <nav class="light-blue darken-4">
+        <div class="nav-wrapper">
+            <div class="row">
+                <a href="#" class="brand-logo">ERIS</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="sass.html">Incidents</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <main class="row">
+        <!-- Page Content goes here -->
+        <div class="col s12 m12 l6">
+            <h2>Open Incidents</h2>
+
+            <table class="striped highlight"">
+                <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Assignee</th>
+                      <th>Status</th>
+                  </tr>
+                </thead>
+        
+                <tbody>
+                    {% for incident in incidents %}
+                    <tr>
+                    <td><i class=" material-icons">warning</i> {{ incident.name }}</td>
+                <td>{{ incident.assignee }}</td>
+                <td>{{ incident.status.value }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class=" col s12 m12 l6">
+            <h2>Incident title</h2>
+
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur dolor dolores rem incidunt
+                ipsum
+                quae at labore repudiandae eveniet modi molestiae, corrupti in ipsa sint possimus veniam quas velit
+                suscipit.</p>
+
+            <div class="divider"></div>
+            <h3>Timeline</h3>
+            <ul class="collection">
+                <li class="collection-item avatar valign-wrapper">
+                    <i class="material-icons circle purple">chat_bubble_outline</i>
+                    <p>Taking ownership of this incident.</p>
+                </li>
+
+                <li class="collection-item avatar valign-wrapper">
+                    <i class="material-icons circle blue">history</i>
+                    <span class="title">Title</span>
+                    <p>Status changed from <b>Open</b> to <b>In Progress</b>.</p>
+                </li>
+            </ul>
+        </div>
+
+    </main>
+
+    <footer class=" page-footer light-blue darken-4">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12"> <!-- No footer content for now -->
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                <i class="material-icons tiny">build</i> Built with Materialize CSS
+                <a class="grey-text text-lighten-4 right" href="https://github.com/kcdubois/fastapi-ims"><i
+                        class="material-icons tiny">github</i> Github</a>
+            </div>
+        </div>
+
+    </footer>
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

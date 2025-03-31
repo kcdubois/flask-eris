@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/python:1-3.12-bullseye
+    environment:
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+    volumes:
+      - ../..:/workspaces:cached
+      - sqlite:/var/sqlite
+    command: sleep infinity
+
+volumes:
+  sqlite:
+    driver: local
