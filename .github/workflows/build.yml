@@ -46,7 +46,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag latest
-        run: docker tag -t $REGISTRY/$IMAGE:$TAG $REGISTRY/$IMAGE:latest
+        run: docker tag $REGISTRY/$IMAGE:$TAG $REGISTRY/$IMAGE:latest
 
       - name: Push image
         run: docker push -a $REGISTRY/$IMAGE:$TAG
