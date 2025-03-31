@@ -21,8 +21,10 @@ module "vpc" {
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
 
-  enable_nat_gateway = false
-  enable_vpn_gateway = false
+  enable_nat_gateway   = true
+  enable_vpn_gateway   = false
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = module.lab.tags
 }
@@ -39,8 +41,6 @@ resource "aws_ecs_cluster_capacity_providers" "fargate" {
   cluster_name = aws_ecs_cluster.fargate.name
 
   capacity_providers = ["FARGATE"]
-
-
   default_capacity_provider_strategy {
     base              = 1
     weight            = 100
@@ -64,6 +64,16 @@ resource "aws_iam_role" "ecs" {
   })
 }
 
+resource "aws_iam_policy_attachment" "ecs_cloudwatch" {
+  name       = "ecs-cloudwatch-logs"
+  policy_arn = data.aws_iam_policy.EcsExecutionTask.arn
+  roles      = [aws_iam_role.ecs.name]
+}
+
+data "aws_iam_policy" "EcsExecutionTask" {
+  name = "AmazonECSTaskExecutionRolePolicy"
+}
+
 # ECS Task
 
 resource "aws_ecs_task_definition" "eris" {
@@ -84,8 +94,19 @@ resource "aws_ecs_task_definition" "eris" {
           containerPort = 8000
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-create-group  = "true"
+          awslogs-group         = aws_cloudwatch_log_group.ecs.name
+          awslogs-region        = data.aws_region.current.name
+          awslogs-stream-prefix = "${module.lab.name}/eris"
+        }
+      }
     }
   ])
+
+
 }
 
 resource "aws_ecs_service" "eris" {
@@ -97,9 +118,9 @@ resource "aws_ecs_service" "eris" {
   desired_count = 1
 
   network_configuration {
-    subnets          = module.vpc.public_subnets
+    subnets          = module.vpc.private_subnets
     security_groups  = [module.vpc.default_security_group_id]
-    assign_public_ip = true
+    assign_public_ip = false
   }
 
   load_balancer {
@@ -107,6 +128,8 @@ resource "aws_ecs_service" "eris" {
     container_port   = 8000
     target_group_arn = aws_lb_target_group.eris.arn
   }
+
+
 
   tags = module.lab.tags
 }
@@ -146,6 +169,15 @@ resource "aws_lb_target_group" "eris" {
 
   depends_on = [aws_lb.ecs]
 }
+
+# # Logging
+
+resource "aws_cloudwatch_log_group" "ecs" {
+  name = "${module.lab.name}-log-group"
+  tags = module.lab.tags
+}
+
+# Outputs
 
 output "lb_fqdn" {
   value = aws_lb.ecs.dns_name
