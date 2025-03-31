@@ -49,7 +49,7 @@ jobs:
         run: docker tag $REGISTRY/$IMAGE:$TAG $REGISTRY/$IMAGE:latest
 
       - name: Push image
-        run: docker push -a $REGISTRY/$IMAGE:$TAG
+        run: docker push -a $REGISTRY/$IMAGE
 
       - name: Trust image using Wiz CLI
         run: ./wizcli docker tag --image  $REGISTRY/$IMAGE:$TAG
