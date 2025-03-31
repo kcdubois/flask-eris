@@ -7,20 +7,25 @@ on:
     branches: [ "main" ]
 
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ${{ github.repository }}
+  TAG: ${{ github.sha }}
+
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-    env:
-      IMAGE: ghcr.io/kcdubois/eris
-      TAG: ${{ github.sha }}
-      
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    
     steps:
     - uses: actions/checkout@v4
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag $IMAGE:$TAG
+      run: docker build . --file Dockerfile --tag  $REGISTRY/$IMAGE:$TAG
       
     - name: Download Wiz CLI
       run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
@@ -32,18 +37,18 @@ jobs:
         WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
 
     - name: Run Wiz docker image scan
-      run: ./wizcli docker scan --image $IMAGE:$TAG --policy "$POLICY"
+      run: ./wizcli docker scan --image $REGISTRY/$IMAGE:$TAG --policy "$POLICY"
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
-        registry: ghcr.io
+        registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push image
-      run: docker push $IMAGE:$TAG
+      run: docker push  $REGISTRY/$IMAGE:$TAG
 
     - name: Trust image using Wiz CLI
       run:
-        ./wizcli docker tag --image $IMAGE:$TAG
+        ./wizcli docker tag --image  $REGISTRY/$IMAGE:$TAG
