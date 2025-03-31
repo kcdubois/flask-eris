@@ -3,9 +3,9 @@
 	"dockerComposeFile": "compose.yaml",
 	"service": "devcontainer",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-
 	"features": {
-		"ghcr.io/devcontainers-extra/features/pipenv:2": {}
-	},
-	"forwardPorts": [5000]
+		"ghcr.io/devcontainers-extra/features/pipenv:2": {},
+		"ghcr.io/devcontainers/features/terraform": {},
+		"ghcr.io/devcontainers/features/aws-cli": {}
+	}
 }

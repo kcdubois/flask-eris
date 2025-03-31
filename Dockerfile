@@ -14,7 +14,7 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 COPY eris .
 
-EXPOSE 8080
+EXPOSE 8000
 
 ENTRYPOINT [ /docker-entrypoint.sh ]
-CMD [ "uvicorn", "--workers 2", "--port 8080", "app:app" ]
+CMD [ "gunicorn", "--workers 2", "--port 8000", "app:app" ]
