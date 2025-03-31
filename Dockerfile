@@ -12,7 +12,7 @@ RUN pipenv install --system --deploy
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-COPY wizard_notebook .
+COPY eris .
 
 EXPOSE 8080
 
