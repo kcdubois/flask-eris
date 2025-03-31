@@ -11,10 +11,11 @@ COPY Pipfile Pipfile.lock .
 RUN pipenv install --system --deploy
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 COPY eris .
 
 EXPOSE 8000
 
-ENTRYPOINT [ /docker-entrypoint.sh ]
-CMD [ "gunicorn", "--workers 2", "-b 0.0.0.0:8000", "app:app" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "gunicorn --workers 2 -b 0.0.0.0:8000 app:app" ]

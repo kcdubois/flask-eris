@@ -25,6 +25,25 @@ module "vpc" {
   enable_vpn_gateway   = false
   enable_dns_support   = true
   enable_dns_hostnames = true
+  default_security_group_ingress = [
+    {
+      description = "Allow traffic from default"
+      from_port   = 0
+      to_port     = 0
+      protocol    = -1
+      self        = true
+    }
+  ]
+  default_security_group_egress = [
+    {
+      description = "Default outbound allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = -1
+      cidr_blocks = "0.0.0.0/0"
+
+    }
+  ]
 
   tags = module.lab.tags
 }
@@ -97,10 +116,9 @@ resource "aws_ecs_task_definition" "eris" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
           awslogs-group         = aws_cloudwatch_log_group.ecs.name
           awslogs-region        = data.aws_region.current.name
-          awslogs-stream-prefix = "${module.lab.name}/eris"
+          awslogs-stream-prefix = "${module.lab.name}"
         }
       }
     }
