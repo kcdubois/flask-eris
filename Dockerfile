@@ -1,7 +1,10 @@
 FROM python:3.12
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+LABEL org.opencontainers.image.source = "https://github.com/kcdubois/flask-eris" 
+LABEL org.opencontainers.image.description = "Simple incident management system"
+
+ENV=PYTHONDONTWRITEBYTECODE 1
+ENV=PYTHONUNBUFFERED 1
 
 RUN pip install pipenv
 

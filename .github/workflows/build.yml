@@ -51,5 +51,18 @@ jobs:
       - name: Push image
         run: docker push -a $REGISTRY/$IMAGE
 
+  sign:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+  
+    needs: build
+    steps:
+      - name: Download Wiz CLI
+          run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
+
+      - name: Pull image from GHCR
+        run: docker pull $REGISTRY/$IMAGE
+
       - name: Trust image using Wiz CLI
         run: ./wizcli docker tag --image  $REGISTRY/$IMAGE:$TAG
