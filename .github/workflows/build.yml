@@ -64,5 +64,11 @@ jobs:
       - name: Pull image from GHCR
         run: docker pull $REGISTRY/$IMAGE
 
+      - name: Authenticate to Wiz
+        run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
+        env:
+          WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
+          WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
+
       - name: Trust image using Wiz CLI
         run: ./wizcli docker tag --image  $REGISTRY/$IMAGE:$TAG
