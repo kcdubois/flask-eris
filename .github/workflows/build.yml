@@ -26,17 +26,8 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag  $REGISTRY/$IMAGE:$TAG
 
-      - name: Download Wiz CLI
-        run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
-
-      - name: Authenticate to Wiz
-        run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
-        env:
-          WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
-          WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
-
-      - name: Run Wiz docker image scan
-        run: ./wizcli docker scan --image $REGISTRY/$IMAGE:$TAG --policy "$POLICY"
+      - name: Tag latest
+        run: docker tag $REGISTRY/$IMAGE:$TAG $REGISTRY/$IMAGE:latest
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -45,13 +36,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag latest
-        run: docker tag $REGISTRY/$IMAGE:$TAG $REGISTRY/$IMAGE:latest
-
       - name: Push image
         run: docker push -a $REGISTRY/$IMAGE
 
-  sign:
+  wiz:
     runs-on: ubuntu-latest
     permissions:
       packages: read
@@ -69,6 +57,9 @@ jobs:
         env:
           WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
           WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
+
+      - name: Run Wiz docker image scan
+        run: ./wizcli docker scan --image $REGISTRY/$IMAGE:$TAG
 
       - name: Trust image using Wiz CLI
         run: ./wizcli docker tag --image  $REGISTRY/$IMAGE:$TAG
