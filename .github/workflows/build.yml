@@ -55,11 +55,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: read
-  
+
     needs: build
     steps:
       - name: Download Wiz CLI
-          run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
+        run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
 
       - name: Pull image from GHCR
         run: docker pull $REGISTRY/$IMAGE
